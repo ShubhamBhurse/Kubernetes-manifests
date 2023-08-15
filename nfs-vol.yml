@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: springapp
+    namespace: test-ns
+spec:
+    replicas: 2
+    selector:
+        matchLabels: 
+            name: springapp
+    template:
+        metadata:
+            labels:
+                name: springapp
+        spec:
+            containers:
+            - name: springappcontainer
+              image: dockerhandson/spring-boot-mongo:1
+              ports:
+              -  containerPort: 8080
+              resources:
+                  requests:
+                      cpu: "200m"
+                      memory: "256Mi"
+                  limits:
+                      cpu: "500m"
+                      memory: "512Mi"
+              env:
+              -   name: MONGO_DB_HOSTNAME
+                  value: mongosvc
+              -   name: MONGO_DB_USERNAME
+                  value: devdb
+              -   name: MONGO_DB_PASSWORD
+                  value: devdb@123
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: springappsvc
+    namespace: test-ns
+spec:
+    type: NodePort
+    selector:
+        name: springapp
+    ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+    name: mongodb
+    namespace: test-ns
+spec:
+    selector:
+        matchLabels:
+            name: mongo
+    template:
+        metadata:
+            name: myapp
+            labels:
+               app: mongo
+        spec:
+            containers:
+            -    name: mongodbcontainer
+                 image:  mongo
+                 ports:
+                 -   containerPort: 27017
+                 env:
+                 -   name: MONGO_INITDB_ROOT_USERNAME
+                     value: devdb
+                 -   name:  MONGO_INITDB_ROOT_PASSWORD
+                     value: devdb@123
+                 volumeMounts:
+                 -  name: mongovol
+                    mountPath: /data/db    #On Container
+            volumes:
+            -  name: mongovol
+               nfs:
+                   server: 172.31.47.141  # NFS Server Private-IP, Works when NFS-SERVER and K8s Cluster are in same VPC
+                   path: /mnt/nfs_share   #Directory on NFS-SERVER
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: mongosvc
+    namespace: test-ns
+spec:
+    type: ClusterIP
+    selector:
+        app: mongo
+    ports:
+    -  port: 27017
+       targetPort: 27017
