@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: nfsvol
+    namespace: test-ns
+spec:
+    capacity:
+        storage: 2Gi
+        accessModes:
+        - ReadWriteOnce
+        nfs:
+           server: 172.31.47.141  # NFS SERVER private-IP
+           path: /mnt/nfs_share   # Directory on NFS-SERVER
