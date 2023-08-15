@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: mypod
+spec:
+   imagePullsecrets:
+   - name: dockerhubcred #Secret Name in which secret stored
+   containers:
+   - name: mavencontainer
+     image: dockerhandson/mavenwebapplication
+     ports:
+     -  containerPort: 8080

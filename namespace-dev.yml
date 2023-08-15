@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: NameSpace
+metadata:
+    name: devops-ns
+    labels:
+        team: devops
+        tools: cicdtools
