@@ -1,0 +1,19 @@
+#   Commands to apply taints on node
+#   kubectl taint nodes <Node-IP> key=value:effect
+#   kubectl taint nodes ip-172-31-7-85 nod=HatesPods:NoSchedule
+#   kubectl describe node ip-172-31-7-85     -----> to check the taint on node
+apiVersion: v1
+kind: Pod
+metadata:
+    name: mypod
+spec:
+    tolerations:
+    - key: node
+      operator: Equal
+      value: HatesPods
+      effect: NoSchedule
+    containers:
+    -  name:  c1
+       image: mongo
+       ports:
+       - containerPort: 27017
