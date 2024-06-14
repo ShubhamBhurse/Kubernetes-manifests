@@ -5,7 +5,8 @@ metadata:
     namespace: test-ns
 spec:
     replicas: 2
-    strategy: recreate
+    strategy: 
+       type: Recreate
     selector:
         matchLabels:
             app: mavenwebapp
