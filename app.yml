@@ -44,7 +44,7 @@ spec:
         name: springapp
     ports:
     - port: 80
-      targetPort: 80
+      targetPort: 8080
 ---
 apiVersion: apps/v1
 kind: ReplicaSet
