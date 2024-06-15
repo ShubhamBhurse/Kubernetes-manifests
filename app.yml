@@ -54,7 +54,7 @@ metadata:
 spec:
     selector:
         matchLabels:
-            name: mongo
+            app: mongo
     template:
         metadata:
             name: myapp
